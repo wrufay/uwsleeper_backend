@@ -65,6 +65,7 @@ public class NapSpotController {
                     spot.setComfortRating(updatedSpot.getComfortRating());
                     spot.setNoiseLevel(updatedSpot.getNoiseLevel());
                     spot.setFootTraffic(updatedSpot.getFootTraffic());
+                    spot.setTagLine(updatedSpot.getTagLine());
                     spot.setDescription(updatedSpot.getDescription());
                     return repository.save(spot);
                 })

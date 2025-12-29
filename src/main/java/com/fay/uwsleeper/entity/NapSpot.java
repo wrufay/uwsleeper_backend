@@ -20,6 +20,7 @@ public class NapSpot {
     private String building;
     private String location;
     private String spotType;
+    private String tagLine;
     private int comfortRating;
     private int noiseLevel;
     private int footTraffic;
@@ -32,13 +33,14 @@ public class NapSpot {
 
     // Constructor with all fields
     public NapSpot(String building, String location, String spotType,
-                   int comfortRating, int noiseLevel, int footTraffic, String description) {
+                   int comfortRating, int noiseLevel, int footTraffic, String tagLine, String description) {
         this.building = building;
         this.location = location;
         this.spotType = spotType;
         this.comfortRating = comfortRating;
         this.noiseLevel = noiseLevel;
         this.footTraffic = footTraffic;
+        this.tagLine = tagLine;
         this.description = description;
     }
 

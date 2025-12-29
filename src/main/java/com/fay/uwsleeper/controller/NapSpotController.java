@@ -39,7 +39,7 @@ public class NapSpotController {
 
     @GetMapping("/building/{building}")
     public List<NapSpot> getSpotsByBuilding(@PathVariable String building) {
-        return repository.findByBuilding(building);
+        return repository.findByBuildingIgnoreCase(building);
     }
 
     // random

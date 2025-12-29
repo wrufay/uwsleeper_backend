@@ -1,0 +1,15 @@
+### Test AI Search
+POST http://localhost:8080/api/spots/search
+Content-Type: application/json
+
+{
+  "description": "i want the loudest place u got."
+}
+
+### Test 2
+POST http://localhost:8080/api/spots/search
+Content-Type: application/json
+
+{
+  "description": "i want to sleep for a long time"
+}

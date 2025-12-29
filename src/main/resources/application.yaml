@@ -1,19 +1,13 @@
 spring:
-  config:
-    import: optional:classpath:application-secrets.yml
   datasource:
-    # Fix: Prepend jdbc: if DATABASE_URL doesn't have it
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/uwsleeper}
-    username: ${PGUSER:faywu}
-    password: ${PGPASSWORD:}
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     show-sql: false
-    properties:
-      hibernate:
-        format_sql: false
 
 server:
   port: ${PORT:8080}

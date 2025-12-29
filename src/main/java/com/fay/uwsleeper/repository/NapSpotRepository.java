@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface NapSpotRepository extends JpaRepository<NapSpot, Long> {
-    List<NapSpot> findByBuilding(String building);
+    List<NapSpot> findByBuildingIgnoreCase(String building);
 }

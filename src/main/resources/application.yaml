@@ -1,18 +1,21 @@
 spring:
   config:
-    import: classpath:application-secrets.yml
+    import: optional:classpath:application-secrets.yml
   datasource:
-    url: jdbc:postgresql://localhost:5432/uwsleeper
-    username: faywu
-
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/uwsleeper}
+    username: ${PGUSER:faywu}
+    password: ${PGPASSWORD:}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: update  # Change from create-drop to update
+    show-sql: false  # Turn off in production
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
 server:
-  port: 8080
+  port: ${PORT:8080}  # Railway sets PORT env var
+
+anthropic:
+  api-key: ${ANTHROPIC_API_KEY}

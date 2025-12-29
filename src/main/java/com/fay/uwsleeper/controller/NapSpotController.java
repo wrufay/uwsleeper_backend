@@ -91,14 +91,20 @@ public class NapSpotController {
         }
 
         String prompt = String.format(
-                "Given these nap spots on Waterloo campus:\n\n%s\n\n" +
-                        "Rating scale explanation:\n" +
-                        "- Comfort: 1=uncomfortable, 5=very comfortable\n" +
-                        "- Noise: 1=silent, 5=very loud\n" +
-                        "- Foot Traffic: 1=isolated, 5=very busy\n\n" +
-                        "User wants: %s\n\n" +
-                        "Return ONLY a single integer ID number. No explanations, no colons, no text, no punctuation. Just the number. Example: 6",
-                spotsInfo.toString(),
+                """
+                        Given these nap spots on Waterloo campus:
+                        
+                        %s
+                        
+                        Rating scale explanation:
+                        - Comfort: 1=uncomfortable, 5=very comfortable
+                        - Noise: 1=silent, 5=very loud
+                        - Foot Traffic: 1=isolated, 5=very busy
+                        
+                        User wants: %s
+                        
+                        Return ONLY a single integer ID number. No explanations, no colons, no text, no punctuation. Just the number. Example: 6""",
+                spotsInfo,
                 request.getDescription()
         );
 

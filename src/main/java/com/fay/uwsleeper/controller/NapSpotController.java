@@ -76,7 +76,7 @@ public class NapSpotController {
         repository.deleteById(id);
     }
 
-    @PostMapping("/spots/{id}/upvote")
+    @PostMapping("/{id}/upvote")
     public ResponseEntity<NapSpot> upvoteSpot(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
@@ -84,7 +84,7 @@ public class NapSpotController {
         return ResponseEntity.ok(repository.save(spot));
     }
 
-    @PostMapping("/spots/{id}/downvote")
+    @PostMapping("/{id}/downvote")
     public ResponseEntity<NapSpot> downvoteSpot(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));

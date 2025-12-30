@@ -46,10 +46,7 @@ public class NapSpot {
 
 
     // Add getters and setters
-    @Column(columnDefinition = "integer default 0")
     private Integer upvotes = 0;
-
-    @Column(columnDefinition = "integer default 0")
     private Integer downvotes = 0;
 
 }

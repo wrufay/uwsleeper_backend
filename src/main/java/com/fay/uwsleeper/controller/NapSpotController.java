@@ -75,21 +75,44 @@ public class NapSpotController {
     public void deleteSpot(@PathVariable Long id) {
         repository.deleteById(id);
     }
-
+    // Upvote: increases upvotes by 1
     @PostMapping("/{id}/upvote")
-    public ResponseEntity<NapSpot> upvoteSpot(@PathVariable Long id) {
+    public NapSpot upvote(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
         spot.setUpvotes(spot.getUpvotes() + 1);
-        return ResponseEntity.ok(repository.save(spot));
+        return repository.save(spot);
     }
 
+    // Downvote: increases downvotes by 1
     @PostMapping("/{id}/downvote")
-    public ResponseEntity<NapSpot> downvoteSpot(@PathVariable Long id) {
+    public NapSpot downvote(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
         spot.setDownvotes(spot.getDownvotes() + 1);
-        return ResponseEntity.ok(repository.save(spot));
+        return repository.save(spot);
+    }
+
+    // Remove upvote: decreases upvotes by 1
+    @PostMapping("/{id}/remove-upvote")
+    public NapSpot removeUpvote(@PathVariable Long id) {
+        NapSpot spot = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Spot not found"));
+        if (spot.getUpvotes() > 0) {
+            spot.setUpvotes(spot.getUpvotes() - 1);
+        }
+        return repository.save(spot);
+    }
+
+    // Remove downvote: decreases downvotes by 1
+    @PostMapping("/{id}/remove-downvote")
+    public NapSpot removeDownvote(@PathVariable Long id) {
+        NapSpot spot = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Spot not found"));
+        if (spot.getDownvotes() > 0) {
+            spot.setDownvotes(spot.getDownvotes() - 1);
+        }
+        return repository.save(spot);
     }
     @PostMapping("/search")
     public ResponseEntity<?> searchByAI(@RequestBody SearchRequest request) {

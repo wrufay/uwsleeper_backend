@@ -164,7 +164,7 @@ public class NapSpotController {
         String apiKey = anthropicApiKey;
         String url = "https://api.anthropic.com/v1/messages";
         String requestBody = String.format(
-                "{\"model\":\"claude-sonnet-4-20250514\",\"max_tokens\":100,\"messages\":[{\"role\":\"user\",\"content\":\"%s\"}]}",
+                "{\"model\":\"claude-3-5-haiku-20241022\",\"max_tokens\":100,\"messages\":[{\"role\":\"user\",\"content\":\"%s\"}]}",
                 prompt.replace("\"", "\\\"").replace("\n", "\\n")
         );
         java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();

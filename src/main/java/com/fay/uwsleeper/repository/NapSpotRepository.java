@@ -1,3 +1,6 @@
+// layer that talks to the database, gives you the CRUD operations
+
+
 package com.fay.uwsleeper.repository;
 
 import com.fay.uwsleeper.entity.NapSpot;

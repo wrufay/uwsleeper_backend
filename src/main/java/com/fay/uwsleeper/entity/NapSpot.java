@@ -1,20 +1,19 @@
 package com.fay.uwsleeper.entity;
 
-
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+// annotations
 @Setter
 @Getter
 @Entity
 
-public class NapSpot {
 
-    // Getters and Setters
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+// define NapSpot object
+public class NapSpot {
+    @Id // id = primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment id
     private Long id;
 
     private String building;
@@ -26,12 +25,14 @@ public class NapSpot {
     private int footTraffic;
     @Column(columnDefinition = "TEXT")
     private String description;
+    private Integer upvotes = 0;
+    private Integer downvotes = 0;
 
 
-    // Default constructor
+    // default (empty) constructor
     public NapSpot() {}
 
-    // Constructor with all fields
+    // constructor with all fields for convenience when adding seed data
     public NapSpot(String building, String location, String spotType,
                    int comfortRating, int noiseLevel, int footTraffic, String tagLine, String description) {
         this.building = building;
@@ -43,10 +44,5 @@ public class NapSpot {
         this.tagLine = tagLine;
         this.description = description;
     }
-
-
-    // Add getters and setters
-    private Integer upvotes = 0;
-    private Integer downvotes = 0;
 
 }

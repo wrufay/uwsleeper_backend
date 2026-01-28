@@ -7,7 +7,7 @@ import lombok.Setter;
 // annotations
 @Setter
 @Getter
-@Entity
+@Entity // tells Hibernate "this class represents a db table"
 
 
 // define NapSpot object

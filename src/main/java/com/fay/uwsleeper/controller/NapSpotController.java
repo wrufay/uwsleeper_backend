@@ -12,20 +12,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Random;
 
+// spring annotations
 @RestController
 @RequestMapping("/api/spots")
 @CrossOrigin(origins = "*")
+
+
 public class NapSpotController {
 
+    // setup api key
     @Autowired
     private NapSpotRepository repository;
 
     @Value("${anthropic.api-key}")
     private String anthropicApiKey;
 
-    public NapSpotController(NapSpotRepository repository) {
-        this.repository = repository;
-    }
+    // api endpoints
 
     @GetMapping
     public List<NapSpot> getAllSpots() {

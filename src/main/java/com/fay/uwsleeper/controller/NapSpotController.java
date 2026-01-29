@@ -132,7 +132,6 @@ public class NapSpotController {
     public ResponseEntity<?> searchByAI(@RequestBody SearchRequest request) {
         List<NapSpot> allSpots = repository.findAll();
 
-        //prompt
         StringBuilder spotsInfo = new StringBuilder();
         for (NapSpot spot : allSpots) {
             spotsInfo.append(String.format(
@@ -142,6 +141,7 @@ public class NapSpotController {
             ));
         }
 
+        // construct prompt for claude AI
         String prompt = String.format(
                 """
                         Given these nap spots on Waterloo campus:
@@ -163,28 +163,41 @@ public class NapSpotController {
         // note on effeciency and api costs - for a larger scale vector search (eg. cosine similarity) would be better (probably more reliable too)
 
         try {
+            // call helper method to send the prompt to Claude
             String claudeResponse = callClaudeAPI(prompt);
+
             // clean up the response from claude to only consist of a single number (id)
             String cleanResponse = claudeResponse.trim()
                     .replaceAll("[^0-9]", "");
             
+            // change to a Long type to match ID data type
             Long spotId = Long.parseLong(cleanResponse);
+            // actually get the spot based on ID and return it
             NapSpot spot = repository.findById(spotId).orElse(null);
             return ResponseEntity.ok(spot);
 
         } catch (Exception e) {
-            // error handling
+            // error handling, catch all
             return ResponseEntity.status(500).body("AI search failed");
         }
     }
 
+    // note for JSON parsing - required a lot of debugging, might be a more robust solution to use a JSON library like Jackson (included in Spring Boot)
+
+    // helper method to call Claude API
     private String callClaudeAPI(String prompt) throws Exception {
         String apiKey = anthropicApiKey;
         String url = "https://api.anthropic.com/v1/messages";
+
+        // edit model and prompt settings here
         String requestBody = String.format(
                 "{\"model\":\"claude-3-5-haiku-20241022\",\"max_tokens\":100,\"messages\":[{\"role\":\"user\",\"content\":\"%s\"}]}",
+
+                // escaping special chars to properly construct the JSON request body (necessary when not using JSON library)
                 prompt.replace("\"", "\\\"").replace("\n", "\\n")
         );
+
+        // create Java HTTP client to send request
         java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
         java.net.http.HttpRequest httpRequest = java.net.http.HttpRequest.newBuilder()
                 .uri(java.net.URI.create(url))

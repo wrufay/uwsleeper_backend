@@ -7,8 +7,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
     # use create-drop when you want to reset the database table with original seed data and stats
-      ddl-auto: create-drop
-      # ddl-auto: update
+      # ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
 
 server:

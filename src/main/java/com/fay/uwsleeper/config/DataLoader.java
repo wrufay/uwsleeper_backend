@@ -11,10 +11,12 @@ import org.springframework.context.annotation.Configuration;
 // manually load seed data
 @Configuration
 public class DataLoader {
-    @Bean
+    @Bean // tell Spring "run this method and register the returned obj in Spring's application context"
+
+    // NapSpotRepository injected by Spring (dependency injection)
     CommandLineRunner initDatabase(NapSpotRepository repository) {
         return args -> {
-            // only seed if the table is empty (prevents duplicates when using ddl-auto: update)
+            // preventative check: only seed if the table is empty (prevents duplicates when using ddl-auto: update)
             if (repository.count() > 0) return;
 
             // slc (public building)

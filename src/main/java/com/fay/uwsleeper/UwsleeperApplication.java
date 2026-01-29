@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class UwsleeperApplication {
-
 	public static void main(String[] args) {
+		// run the application
 		SpringApplication.run(UwsleeperApplication.class, args);
 	}
 

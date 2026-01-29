@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 
-// seed data
+// load seed data
 @Configuration
 public class DataLoader {
 

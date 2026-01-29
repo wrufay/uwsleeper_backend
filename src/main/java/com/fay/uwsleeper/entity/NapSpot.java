@@ -13,7 +13,9 @@ import lombok.Setter;
 // define NapSpot object
 public class NapSpot {
     @Id // id = primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment id
+
+    // auto generate id (Long type) for newly created NapSpots
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String building;

@@ -13,52 +13,53 @@ import java.util.List;
 import java.util.Random;
 
 // spring annotations
-@RestController
-@RequestMapping("/api/spots")
-@CrossOrigin(origins = "*")
+@RestController // tell Spring to handle HTTP request + automatically convert to JSON
+@RequestMapping("/api/spots") // set base URL
+@CrossOrigin(origins = "*") // allow any domain to call the API
 
 
 public class NapSpotController {
 
-    // setup api key
+    // setup repository (database access) + api key
     @Autowired
     private NapSpotRepository repository;
 
     @Value("${anthropic.api-key}")
     private String anthropicApiKey;
 
-    // api endpoints
+    // api endpoints to create/read/update/delete NapSpots -------------------------
 
     @GetMapping
     public List<NapSpot> getAllSpots() {
+        // return list of all NapSpots in the database
         return repository.findAll();
     }
 
     @GetMapping("/{id}")
     public NapSpot getSpotById(@PathVariable Long id) {
+        // return single NapSpot by its ID
         return repository.findById(id).orElse(null);
     }
 
     @GetMapping("/building/{building}")
     public List<NapSpot> getSpotsByBuilding(@PathVariable String building) {
+        // return list of NapSpots matching the specified building using custom query method
         return repository.findByBuildingIgnoreCase(building);
     }
 
-    // random
     @GetMapping("/random")
     public NapSpot getRandomSpot() {
         List<NapSpot> spots = repository.findAll();
         if (spots.isEmpty()) return null;
+
+        // return a spot based on a random index in the list
         return spots.get(new Random().nextInt(spots.size()));
     }
-
-    @PostMapping
-    public NapSpot createSpot(@RequestBody NapSpot spot) {
-        return repository.save(spot);
-    }
+    
 
     @PutMapping("/{id}")
     public NapSpot updateSpot(@PathVariable Long id, @RequestBody NapSpot updatedSpot) {
+        // given the ID of the spot you want to update and the new updated body, save & return that spot with each of the fields mapped to the new data.
         return repository.findById(id)
                 .map(spot -> {
                     spot.setBuilding(updatedSpot.getBuilding());
@@ -73,49 +74,60 @@ public class NapSpotController {
                 })
                 .orElse(null);
     }
-    @DeleteMapping("/{id}")
-    public void deleteSpot(@PathVariable Long id) {
-        repository.deleteById(id);
-    }
-    // Upvote: increases upvotes by 1
-    @PostMapping("/{id}/upvote")
-    public NapSpot upvote(@PathVariable Long id) {
-        NapSpot spot = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Spot not found"));
-        spot.setUpvotes(spot.getUpvotes() + 1);
+
+    @PostMapping
+    public NapSpot createSpot(@RequestBody NapSpot spot) {
+        // note: @RequestBody turns JSON send by front-end into a NapSpot Java object.
+
+        // return the newly saved NapSpot object w/ auto-generated ID
         return repository.save(spot);
     }
 
-    // Downvote: increases downvotes by 1
+    @DeleteMapping("/{id}")
+    public void deleteSpot(@PathVariable Long id) {
+        // delete a spot by ID, doesn't return anything
+        repository.deleteById(id);
+    }
+
+
+    // endpoints to manage upvotes & downvotes -------------------------
+    
+    @PostMapping("/{id}/upvote")
+    public NapSpot upvote(@PathVariable Long id) {
+        NapSpot spot = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Spot not found")); // error handling
+        spot.setUpvotes(spot.getUpvotes() + 1); // increase upvote by 1, then save NapSpot + return it
+        return repository.save(spot);
+    }
+
     @PostMapping("/{id}/downvote")
     public NapSpot downvote(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
-        spot.setDownvotes(spot.getDownvotes() + 1);
+        spot.setDownvotes(spot.getDownvotes() + 1); // increase downvote by 1, then save NapSpot + return it
         return repository.save(spot);
     }
 
-    // Remove upvote: decreases upvotes by 1
     @PostMapping("/{id}/remove-upvote")
     public NapSpot removeUpvote(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
         if (spot.getUpvotes() > 0) {
-            spot.setUpvotes(spot.getUpvotes() - 1);
+            spot.setUpvotes(spot.getUpvotes() - 1); // decrease upvote by 1, then save NapSpot + return it
         }
         return repository.save(spot);
     }
 
-    // Remove downvote: decreases downvotes by 1
     @PostMapping("/{id}/remove-downvote")
     public NapSpot removeDownvote(@PathVariable Long id) {
         NapSpot spot = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
         if (spot.getDownvotes() > 0) {
-            spot.setDownvotes(spot.getDownvotes() - 1);
+            spot.setDownvotes(spot.getDownvotes() - 1); // decrease downvote by 1, then save NapSpot + return it
         }
         return repository.save(spot);
     }
+
     @PostMapping("/search")
     public ResponseEntity<?> searchByAI(@RequestBody SearchRequest request) {
         List<NapSpot> allSpots = repository.findAll();
@@ -144,20 +156,24 @@ public class NapSpotController {
                         User wants: %s
                         
                         Return ONLY a single integer ID number. No explanations, no colons, no text, no punctuation. Just the number. Example: 6""",
-                spotsInfo,
-                request.getDescription()
+                spotsInfo, // pass in the information for all spots
+                request.getDescription() // user prompt
         );
+
+        // note on effeciency and api costs - for a larger scale vector search (eg. cosine similarity) would be better (probably more reliable too)
 
         try {
             String claudeResponse = callClaudeAPI(prompt);
+            // clean up the response from claude to only consist of a single number (id)
             String cleanResponse = claudeResponse.trim()
-                    .replaceAll("[^0-9]", "")
-                    .trim();
+                    .replaceAll("[^0-9]", "");
+            
             Long spotId = Long.parseLong(cleanResponse);
             NapSpot spot = repository.findById(spotId).orElse(null);
             return ResponseEntity.ok(spot);
 
         } catch (Exception e) {
+            // error handling
             return ResponseEntity.status(500).body("AI search failed");
         }
     }
